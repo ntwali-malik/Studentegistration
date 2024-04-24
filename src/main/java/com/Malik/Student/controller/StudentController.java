@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/student")
+@CrossOrigin("*")
 public class StudentController {
 
 	@Autowired
@@ -50,13 +52,13 @@ public class StudentController {
 	
 	//Creating
 	@PostMapping
-	public ResponseEntity<Object> createStudent(@Valid @RequestBody StudentDto studentDto,BindingResult result){
+	public ResponseEntity<Object> createStudent(@Valid @RequestBody StudentDto studentDto){
 		
 		Student student = new Student();
-		student.setStudent_id(studentDto.getStudent_id());
 		student.setFirst_name(studentDto.getFirst_name());
 		student.setLast_name(studentDto.getLast_name());
 		student.setDate_of_birth(studentDto.getDate_of_birth());
+		//student.setDate_of_birth(studentDto.getDate_of_birth());
 		
 		repo.save(student);
 		
@@ -64,24 +66,23 @@ public class StudentController {
 		
 	}
 	
+	// UPDATE
+	
 	@PutMapping("{id}")
-	public ResponseEntity<Object> updateStudent(@PathVariable int id, @Valid @RequestBody StudentDto studentDto, BindingResult result) {
+	public ResponseEntity<Object> updateStudent(@PathVariable int id, @Valid @RequestBody StudentDto studentDto) {
 	    // Retrieve the existing student from the repository
 	    Student student = repo.findById(id).orElse(null);
 	    if (student == null) {
 	        return new ResponseEntity<>("Student with ID " + id + " not found", HttpStatus.NOT_FOUND);
 	    }
-
-	    // Update the existing student entity with the new data
-	    student.setStudent_id(studentDto.getStudent_id());
 	    student.setFirst_name(studentDto.getFirst_name());
 	    student.setLast_name(studentDto.getLast_name());
 	    student.setDate_of_birth(studentDto.getDate_of_birth());
-
-	    // Save the updated student entity
 	    repo.save(student);
 	    return ResponseEntity.ok(student);
 	}
+	
+	//DELETE
 	
 	@DeleteMapping("{id}")
 	public ResponseEntity<Object> deleteStudent (@PathVariable int id){

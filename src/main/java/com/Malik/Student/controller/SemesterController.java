@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +24,13 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/semester")
+@CrossOrigin("*")
 public class SemesterController {
 	
 	@Autowired
 	private SemesterRepository repo ;
 	
-	//Dislpaying All Semester
+	//Displaying All Semester
 	@GetMapping
 	public List<Semester> getSemester(){
 		return repo.findAll();
@@ -53,7 +55,6 @@ public class SemesterController {
 	public ResponseEntity<Object> saveSemester(@Valid @RequestBody SemesterDto semesterDto){
 		
 		Semester semester = new Semester();
-		semester.setSemester_id(semesterDto.getSemester_id());
 		semester.setSemester_name(semesterDto.getSemester_name());
 		semester.setStarting_date(semesterDto.getStarting_date());
 		semester.setEnd_date(semesterDto.getEnd_date());
@@ -63,7 +64,7 @@ public class SemesterController {
 		return ResponseEntity.ok(semester);
 	}
 	
-	//Upadeting Semester
+	//Updating Semester
 	
 	@PutMapping("{id}")
 	public ResponseEntity<Object> updateSemester(@PathVariable int id,@Valid @RequestBody SemesterDto semesterDto){
@@ -71,7 +72,6 @@ public class SemesterController {
 		if(semester == null) {
 			return new ResponseEntity<>("Semester with ID " + id + " not found", HttpStatus.NOT_FOUND);
 	    }
-		semester.setSemester_id(semesterDto.getSemester_id());
 		semester.setSemester_name(semesterDto.getSemester_name());
 		semester.setStarting_date(semesterDto.getStarting_date());
 		semester.setEnd_date(semesterDto.getEnd_date());
@@ -88,7 +88,6 @@ public class SemesterController {
 		if(semester == null) {
 			return new ResponseEntity<>("Semester with ID " + id + " not found", HttpStatus.NOT_FOUND);
 	    }
-		
 		repo.delete(semester);
 		return ResponseEntity.status(HttpStatus.OK).body("Semester with id " + id + " deleted successfully");
 		
